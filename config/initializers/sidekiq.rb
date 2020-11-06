@@ -22,4 +22,11 @@ else
   Sidekiq.configure_client do |config|
     config.redis = SIDEKIQ_REDIS_POOL
   end
+
+  Sidekiq.configure_server do |config|
+    config.server_middleware do |chain|
+      require 'prometheus_exporter/instrumentation'
+      chain.add PrometheusExporter::Instrumentation::Sidekiq
+    end
+  end
 end

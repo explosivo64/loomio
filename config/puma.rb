@@ -19,6 +19,11 @@ if ENV['LOOMIO_SSL_KEY']
   }
 end
 
+after_fork do
+  require 'prometheus_exporter/instrumentation'
+  PrometheusExporter::Instrumentation::Process.start(type:"web")
+end
+
 on_worker_boot do
   ActiveSupport.on_load(:active_record) do
     ActiveRecord::Base.establish_connection
