@@ -202,6 +202,7 @@ class Poll < ApplicationRecord
                                               .where("stance_choices.created_at > ?", since || 100.years.ago)
                                               .includes(:poll_option, stance: :participant)
                                               .where("stances.latest": true)
+                                              .where("stances.revoked_at": nil)
                                               .to_a
                                               .group_by(&:poll_option)
   end
@@ -229,7 +230,7 @@ class Poll < ApplicationRecord
         FROM stances
         INNER JOIN stance_choices ON stance_choices.stance_id = stances.id
         INNER JOIN poll_options ON poll_options.id = stance_choices.poll_option_id
-        WHERE stances.latest = true AND stances.poll_id = #{self.id}
+        WHERE stances.latest = true AND stances.poll_id = #{self.id} AND stances.revoked_at IS NULL
         GROUP BY poll_options.name
       }).map { |row| [row['name'], row['total'].to_i] }.to_h))
 

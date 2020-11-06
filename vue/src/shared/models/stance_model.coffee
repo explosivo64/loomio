@@ -21,6 +21,16 @@ export default class StanceModel extends BaseModel
     files: []
     imageFiles: []
     attachments: []
+    revokedAt: null
+    latest: false
+    admin: false
+    castAt: null
+    createdAt: null
+    volume: null
+    inviterId: null
+    pollId: null
+    participantId: null
+    myStance: false
 
   relationships: ->
     @belongsTo 'poll'

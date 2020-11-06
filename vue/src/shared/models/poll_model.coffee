@@ -104,7 +104,7 @@ export default class PollModel extends BaseModel
         existing.push(stance.participantId)
 
   latestStances: (order = '-createdAt', limit) ->
-    slice(sortBy(@recordStore.stances.find(pollId: @id, latest: true), order), 0, limit)
+    slice(sortBy(@recordStore.stances.find(pollId: @id, latest: true, revokedAt: null), order), 0, limit)
 
   hasDescription: ->
     !!@details

@@ -27,13 +27,12 @@ export default
       collections: ['stances']
       query: => @findRecords()
 
-  computed:
-    latestStances: ->
-      @stances.filter (stance) -> stance.latest
-
   methods:
     findRecords: ->
-      chain = Records.stances.collection.chain().find(pollId: @poll.id).find(latest: true)
+      chain = Records.stances.collection.chain()
+                .find(pollId: @poll.id)
+                .find(latest: true)
+                .find(revokedAt: null)
       chain = switch @order
         when 'newest_first'
           chain.simplesort('castAt', true)
@@ -64,7 +63,7 @@ export default
     v-select(style="max-width: 200px" dense solo v-model='order' :items="sortOptions" @change='refresh()' aria-label="$t('poll_common_votes_panel.change_results_order')")
   .poll-common-votes-panel__no-votes(v-if='!poll.votersCount' v-t="'poll_common_votes_panel.no_votes_yet'")
   .poll-common-votes-panel__has-votes(v-if='poll.votersCount')
-    .poll-common-votes-panel__stance(v-for='stance in latestStances' :key='stance.id')
+    .poll-common-votes-panel__stance(v-for='stance in stances' :key='stance.id')
       .poll-common-votes-panel__avatar.pr-3
         user-avatar(:user='stance.participant()' size='24')
       .poll-common-votes-panel__stance-content
